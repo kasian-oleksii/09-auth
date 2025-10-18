@@ -37,13 +37,20 @@ const NoteForm = () => {
   });
 
   const handleSubmit = (formData: FormData) => {
-    const data = Object.fromEntries(formData) as NewNote;
-    // const data: NewNote = {
-    //   title: formData.get('title') as string,
-    //   content: formData.get('content') as string,
-    //   tag: formData.get('tag') as NewNote['tag'],
-    // };
-    // console.log('form data', data);
+    const title = formData.get('title');
+    const content = formData.get('content');
+    const tag = formData.get('tag');
+
+    if (!title || !content || !tag) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const data: NewNote = {
+      title: String(title),
+      content: String(content),
+      tag: String(tag) as NewNote['tag'],
+    };
 
     mutate(data);
   };
