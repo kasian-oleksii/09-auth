@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import css from './NoteModal.module.css';
+import css from './Modal.module.css';
 
 type Props = {
   onClose: () => void;
