@@ -1,6 +1,17 @@
 import SidebarNotes from '@/components/SidebarNotes/SidebarNotes';
 
-const tags = ['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'];
+const tags = [
+  'Todo',
+  'Personal',
+  'Work',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+];
 
 const NotesSidebar = async () => {
   return (

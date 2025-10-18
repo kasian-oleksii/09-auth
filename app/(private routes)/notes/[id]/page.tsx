@@ -1,4 +1,4 @@
-import { fetchNoteById } from '@/lib/api';
+import { fetchNoteById } from '@/lib/api/serverApi';
 import {
   QueryClient,
   HydrationBoundary,
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `Note: ${note.title} `,
       description: `Note description: ${note.content.slice(0, 10)} ...`,
       siteName: 'NoteHub',
-      url: `https://08-zustand-livid.vercel.app/notes/${id}`,
+      url: `https://09-auth-roan.vercel.app/notes/${id}`,
       images: [
         {
           url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',

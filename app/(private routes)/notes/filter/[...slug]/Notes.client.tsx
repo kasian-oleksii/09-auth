@@ -4,17 +4,22 @@ import { useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useDebouncedCallback } from 'use-debounce';
 import css from './NotesPage.module.css';
-import { fetchNotes } from '@/lib/api';
+import { fetchNotes } from '@/lib/api/clientApi';
 import NoteList from '@/components/NoteList/NoteList';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
+import { FetchNoteList } from '@/types/note';
 import Link from 'next/link';
 
 type NotesClientProps = {
-  tag?: string;
+  initialData: FetchNoteList;
+  initialTag?: string;
 };
 
-export default function NotesClient({ tag }: NotesClientProps) {
+export default function NotesClient({
+  initialData,
+  initialTag,
+}: NotesClientProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [inputValue, setInputValue] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
@@ -30,9 +35,10 @@ export default function NotesClient({ tag }: NotesClientProps) {
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['notes', currentPage, debouncedValue, tag],
-    queryFn: () => fetchNotes(currentPage, debouncedValue, tag),
+    queryKey: ['notes', currentPage, debouncedValue, initialTag],
+    queryFn: () => fetchNotes(currentPage, debouncedValue, initialTag),
     placeholderData: keepPreviousData,
+    initialData,
   });
 
   const totalPages = data?.totalPages ?? 0;
@@ -49,13 +55,12 @@ export default function NotesClient({ tag }: NotesClientProps) {
             totalPages={totalPages}
           />
         )}
-
         <Link href="/notes/action/create" className={css.button}>
           Note +
         </Link>
       </header>
 
-      {isLoading && <p className={css.loading}>Loading notes...</p>}
+      {isLoading && <p className={css.loading}>loading notes...</p>}
       {isError && <p className={css.error}>Server error. Sorry!</p>}
       {data && !isLoading && <NoteList notes={data.notes} />}
     </div>
