@@ -8,18 +8,13 @@ import { fetchNotes } from '@/lib/api/clientApi';
 import NoteList from '@/components/NoteList/NoteList';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
-import { FetchNoteList } from '@/types/note';
 import Link from 'next/link';
 
 type NotesClientProps = {
-  initialData: FetchNoteList;
   initialTag?: string;
 };
 
-export default function NotesClient({
-  initialData,
-  initialTag,
-}: NotesClientProps) {
+export default function NotesClient({ initialTag }: NotesClientProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [inputValue, setInputValue] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
@@ -38,7 +33,6 @@ export default function NotesClient({
     queryKey: ['notes', currentPage, debouncedValue, initialTag],
     queryFn: () => fetchNotes(currentPage, debouncedValue, initialTag),
     placeholderData: keepPreviousData,
-    initialData,
   });
 
   const totalPages = data?.totalPages ?? 0;
@@ -47,7 +41,6 @@ export default function NotesClient({
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox value={inputValue} onSearch={handleSearchChange} />
-
         {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}

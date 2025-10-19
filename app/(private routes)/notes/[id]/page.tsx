@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const note = await fetchNoteById(id);
   return {
-    title: `Note: ${note.title} `,
+    title: `Note: ${note.title}`,
     description: `Note description: ${note.content.slice(0, 30)}`,
     openGraph: {
-      title: `Note: ${note.title} `,
+      title: `Note: ${note.title}`,
       description: `Note description: ${note.content.slice(0, 10)} ...`,
       siteName: 'NoteHub',
       url: `https://09-auth-roan.vercel.app/notes/${id}`,
@@ -36,12 +36,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const NoteDetails = async ({ params }: Props) => {
   const { id } = await params;
-  console.log('noteId', id);
 
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['notes', id],
+    queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
   });
 
