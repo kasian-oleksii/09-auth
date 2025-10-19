@@ -1,42 +1,34 @@
-import { fetchNotes } from '@/lib/api/serverApi';
+import {
+  HydrationBoundary,
+  dehydrate,
+  QueryClient,
+} from '@tanstack/react-query';
+import { fetchNotes } from '@/lib/api/clientApi';
 import NotesClient from './Notes.client';
-import { Metadata } from 'next';
 
-type Props = {
-  params: Promise<{ slug: string[] }>;
+type NotesPageProps = {
+  params: { slug?: string[] };
+  searchParams?: { [key: string]: string | undefined };
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const tag = slug[0] === 'all' ? 'All notes' : slug[0];
-  return {
-    title: `Notes: ${tag}`,
-    description: `Notes with tag: ${tag}`,
-    openGraph: {
-      title: `Notes: ${tag}`,
-      description: `Notes with tag: ${tag}`,
-      url: `https://09-auth-roan.vercel.app/notes/filter/${tag}`,
-      images: [
-        {
-          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
-          width: 1200,
-          height: 630,
-          alt: 'NoteHub logo',
-        },
-      ],
-    },
-  };
-}
+export default async function NotesPage({
+  params,
+  searchParams,
+}: NotesPageProps) {
+  const currentPage = Number(searchParams?.page ?? 1);
+  const search = String(searchParams?.search ?? '');
+  const tag = params.slug?.[0] ?? '';
 
-export default async function NotesPage({ params }: Props) {
-  const { slug } = await params;
-  console.log('slug', slug);
+  const queryClient = new QueryClient();
 
-  const initialPage = 1;
-  const initialQuery = '';
-  const initialTag = slug[0] === 'all' ? undefined : slug[0];
+  await queryClient.prefetchQuery({
+    queryKey: ['notes', currentPage, search, tag],
+    queryFn: () => fetchNotes(currentPage, search, tag),
+  });
 
-  const initialData = await fetchNotes(initialPage, initialQuery, initialTag);
-
-  return <NotesClient initialData={initialData} initialTag={initialTag} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NotesClient initialTag={tag} />
+    </HydrationBoundary>
+  );
 }

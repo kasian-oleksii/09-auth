@@ -41,6 +41,7 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox value={inputValue} onSearch={handleSearchChange} />
+
         {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
@@ -53,7 +54,7 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
         </Link>
       </header>
 
-      {isLoading && <p className={css.loading}>loading notes...</p>}
+      {isLoading && <p className={css.loading}>Loading notes...</p>}
       {isError && <p className={css.error}>Server error. Sorry!</p>}
       {data && !isLoading && <NoteList notes={data.notes} />}
     </div>
